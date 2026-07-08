@@ -1,0 +1,121 @@
+// JobStudy — Prisma schema.
+// Dev: SQLite. Prod (Vercel): the build swaps the provider to "postgresql".
+// Public content is authored in Russian (the runtime i18n layer translates it).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Local dev uses SQLite; the Vercel build swaps this to "postgresql".
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  valueJson Json
+  updatedAt DateTime @updatedAt
+}
+
+// ---- Editable site content (Home page lists) ----
+
+model News {
+  id        Int      @id @default(autoincrement())
+  title     String
+  date      String
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Story {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  quote     String
+  img       String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  text      String
+  img       String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        Int      @id @default(autoincrement())
+  name      String
+  sub       String?
+  logo      String?
+  mark      String? // single-letter mark when no logo
+  markBg    String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---- Data captured from the public site ----
+
+model Application {
+  id        Int      @id @default(autoincrement())
+  kind      String   @default("consult") // consult | business | event | contact
+  name      String
+  email     String?
+  phone     String?
+  payload   Json // full wizard answers
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+}
+
+model PortalLead {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String
+  phone     String?
+  role      String?
+  kind      String   @default("register") // register | login
+  createdAt DateTime @default(now())
+}
+
+model ContactRequest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  message   String?
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+}
+
+model MediaAsset {
+  id        Int      @id @default(autoincrement())
+  url       String
+  filename  String
+  mime      String?
+  size      Int?
+  createdAt DateTime @default(now())
+}

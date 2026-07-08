@@ -1,0 +1,56 @@
+/* Tailwind v4 — utilities only (no preflight) so the public site keeps exact
+   browser defaults; utilities power the admin panel. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* ============================================================
+   JobStudy — public site base (ported verbatim from the source).
+   Dark mode is a whole-page invert filter toggled via html.jb-dark.
+   ============================================================ */
+html, body { margin: 0; }
+html { background: #fff; scroll-behavior: smooth; }
+body { background: #fff; font-family: 'Manrope', sans-serif; }
+
+html.jb-dark { background: #080D18; }
+html.jb-dark body { filter: invert(0.94) hue-rotate(180deg) contrast(0.93) brightness(1.05); background: #fff; }
+html.jb-dark body [data-keep="true"],
+html.jb-dark body [style*="background-image"] { filter: invert(1) hue-rotate(180deg); }
+html.jb-dark body [data-keep="true"] [style*="background-image"] { filter: none; }
+html.jb-dark body img { filter: invert(1) hue-rotate(180deg); }
+html.jb-dark body [data-keep="true"] img { filter: none; }
+
+/* the admin panel must never be inverted */
+html.jb-dark body .admin-scope { filter: none !important; }
+
+nav::-webkit-scrollbar { display: none; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+@keyframes jbIntroUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes jbIntroPop { 0% { opacity: 0; transform: scale(.86); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes jbSlowZoom { from { transform: scale(1.03); } to { transform: scale(1.14); } }
+@keyframes jbBob { 0%, 100% { transform: translateY(0); opacity: .7; } 50% { transform: translateY(7px); opacity: 1; } }
+
+/* ============================================================
+   Admin panel base reset (Tailwind preflight disabled) + premium touches.
+   ============================================================ */
+.admin-scope a { color: inherit; }
+
+@layer base {
+  .admin-scope { font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif; color: #1e2536; background: #f6f8fb; -webkit-font-smoothing: antialiased; }
+  .admin-scope * { box-sizing: border-box; }
+  .admin-scope h1, .admin-scope h2, .admin-scope h3, .admin-scope h4, .admin-scope p, .admin-scope figure, .admin-scope ul, .admin-scope ol { margin: 0; }
+  .admin-scope ul, .admin-scope ol { padding: 0; list-style: none; }
+  .admin-scope a { color: inherit; text-decoration: none; }
+  .admin-scope button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  .admin-scope input, .admin-scope select, .admin-scope textarea { font: inherit; color: inherit; }
+  .admin-scope table { border-collapse: collapse; width: 100%; }
+  .admin-scope ::-webkit-scrollbar { width: 10px; height: 10px; }
+  .admin-scope ::-webkit-scrollbar-thumb { background: #d3dae6; border-radius: 8px; }
+  .admin-scope ::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* subtle admin animation utilities */
+@keyframes adminFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.admin-fade { animation: adminFade .35s ease both; }
