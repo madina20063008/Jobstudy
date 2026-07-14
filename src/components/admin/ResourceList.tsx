@@ -66,7 +66,9 @@ export function ResourceList({ resourceKey }: { resourceKey: string }) {
   }, [cfg.api]);
 
   useEffect(() => {
-    load();
+    // defer to avoid synchronous setState within effect
+    const id = requestAnimationFrame(() => { load(); });
+    return () => cancelAnimationFrame(id);
   }, [load]);
 
   async function remove(id: string | number) {

@@ -108,15 +108,19 @@ export function JbProvider({ children, content = null }: { children: React.React
   // hydrate persisted theme / lang / session
   useEffect(() => {
     let d = false, l: Lang = "ru";
+    let s: Session | null = null;
     try {
       d = localStorage.getItem("jb-theme") === "dark";
       l = (localStorage.getItem("jb-lang") as Lang) || "ru";
-      const s = JSON.parse(localStorage.getItem("jb-session") || "null");
-      if (s) setSessionState(s);
+      s = JSON.parse(localStorage.getItem("jb-session") || "null");
     } catch {}
     document.documentElement.classList.toggle("jb-dark", d);
-    setDark(d);
-    if (l !== "ru") { setLangState(l); loadDict(l).then(() => translateDom(l)); }
+    // Defer React state updates to avoid synchronous setState within effect
+    requestAnimationFrame(() => {
+      setDark(d);
+      if (s) setSessionState(s);
+      if (l !== "ru") { setLangState(l); loadDict(l).then(() => translateDom(l)); }
+    });
   }, []);
 
   // re-translate whenever the page or language changes (after DOM paints)

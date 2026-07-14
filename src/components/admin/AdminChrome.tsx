@@ -27,6 +27,41 @@ const CRM_KEYS = ["applications", "portal-leads", "contact-requests", "users"];
 
 const ROLE_LABEL: Record<string, string> = { admin: "Администратор", editor: "Редактор" };
 
+function NavLinkComp({ href, label, icon, exact, active, onClick }: { href: string; label: string; icon: string; exact: boolean; active: boolean; onClick?: () => void }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-semibold transition-all"
+      style={{
+        color: active ? "#ffffff" : "rgba(255,255,255,0.62)",
+        background: active ? "rgba(107,127,247,0.20)" : "transparent",
+      }}
+    >
+      {active && (
+        <span
+          className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full"
+          style={{ background: "#6B7FF7", boxShadow: "0 0 10px rgba(107,127,247,0.8)" }}
+        />
+      )}
+      <span
+        className="flex h-8 w-8 items-center justify-center rounded-lg transition-all"
+        style={{
+          background: active ? "rgba(107,127,247,0.28)" : "rgba(255,255,255,0.05)",
+          color: active ? "#C9D2FF" : "rgba(255,255,255,0.55)",
+        }}
+      >
+        <Icon name={icon} size={19} />
+      </span>
+      <span className="truncate">{label}</span>
+    </Link>
+  );
+}
+
+function CaptionComp({ text }: { text: string }) {
+  return <div className="px-3 pb-1 pt-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white/35">{text}</div>;
+}
+
 export function AdminChrome({ user, children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
@@ -49,41 +84,7 @@ export function AdminChrome({ user, children }: Props) {
     return RESOURCES[seg]?.label ?? "Панель";
   })();
 
-  const NavLink = ({ href, label, icon, exact }: { href: string; label: string; icon: string; exact: boolean }) => {
-    const active = isActive(href, exact);
-    return (
-      <Link
-        href={href}
-        onClick={() => setOpen(false)}
-        className="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-semibold transition-all"
-        style={{
-          color: active ? "#ffffff" : "rgba(255,255,255,0.62)",
-          background: active ? "rgba(107,127,247,0.20)" : "transparent",
-        }}
-      >
-        {active && (
-          <span
-            className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full"
-            style={{ background: "#6B7FF7", boxShadow: "0 0 10px rgba(107,127,247,0.8)" }}
-          />
-        )}
-        <span
-          className="flex h-8 w-8 items-center justify-center rounded-lg transition-all"
-          style={{
-            background: active ? "rgba(107,127,247,0.28)" : "rgba(255,255,255,0.05)",
-            color: active ? "#C9D2FF" : "rgba(255,255,255,0.55)",
-          }}
-        >
-          <Icon name={icon} size={19} />
-        </span>
-        <span className="truncate">{label}</span>
-      </Link>
-    );
-  };
-
-  const Caption = ({ text }: { text: string }) => (
-    <div className="px-3 pb-1 pt-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white/35">{text}</div>
-  );
+  // use the top-level NavLinkComp and CaptionComp and pass control props
 
   const initial = (user.name || user.email || "?").trim().charAt(0).toUpperCase();
 
@@ -115,21 +116,21 @@ export function AdminChrome({ user, children }: Props) {
 
         <nav className="flex-1 overflow-y-auto px-3 pb-6">
           <div className="pt-3">
-            <NavLink href="/admin" label="Панель" icon="dashboard" exact />
+            <NavLinkComp href="/admin" label="Панель" icon="dashboard" exact active={isActive("/admin", true)} onClick={() => setOpen(false)} />
           </div>
 
-          <Caption text="Контент" />
+          <CaptionComp text="Контент" />
           {CONTENT_KEYS.map((k) => (
-            <NavLink key={k} href={`/admin/${k}`} label={RESOURCES[k].label} icon={RESOURCES[k].icon} exact={false} />
+            <NavLinkComp key={k} href={`/admin/${k}`} label={RESOURCES[k].label} icon={RESOURCES[k].icon} exact={false} active={isActive(`/admin/${k}`, false)} onClick={() => setOpen(false)} />
           ))}
 
-          <Caption text="CRM" />
+          <CaptionComp text="CRM" />
           {CRM_KEYS.map((k) => (
-            <NavLink key={k} href={`/admin/${k}`} label={RESOURCES[k].label} icon={RESOURCES[k].icon} exact={false} />
+            <NavLinkComp key={k} href={`/admin/${k}`} label={RESOURCES[k].label} icon={RESOURCES[k].icon} exact={false} active={isActive(`/admin/${k}`, false)} onClick={() => setOpen(false)} />
           ))}
 
           <div className="mt-4 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <NavLink href="/admin/settings" label="Настройки сайта" icon="settings" exact />
+            <NavLinkComp href="/admin/settings" label="Настройки сайта" icon="settings" exact active={isActive("/admin/settings", false)} onClick={() => setOpen(false)} />
           </div>
         </nav>
 

@@ -1,10 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "JobStudy — UZ · JAPAN · GERMANY",
   description:
     "Соединяем таланты, образование и возможности между Узбекистаном, Японией и Германией ради лучшего будущего.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

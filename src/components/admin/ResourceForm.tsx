@@ -106,7 +106,8 @@ export function ResourceForm({ resourceKey, id }: { resourceKey: string; id: str
         else if (f.type === "select") init[f.name] = f.options?.[0]?.value ?? "";
         else init[f.name] = "";
       });
-      setState(init);
+      // defer to avoid synchronous setState in effect
+      requestAnimationFrame(() => setState(init));
       return;
     }
     (async () => {

@@ -8,9 +8,12 @@
    JobStudy — public site base (ported verbatim from the source).
    Dark mode is a whole-page invert filter toggled via html.jb-dark.
    ============================================================ */
-html, body { margin: 0; }
+html, body { margin: 0; width: 100%; overflow-x: hidden; }
 html { background: #fff; scroll-behavior: smooth; }
-body { background: #fff; font-family: 'Manrope', sans-serif; }
+body { background: #fff; font-family: 'Manrope', sans-serif; min-width: 320px; -webkit-text-size-adjust: 100%; }
+* { box-sizing: border-box; }
+img, svg { max-width: 100%; height: auto; display: block; }
+a, button, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 
 html.jb-dark { background: #080D18; }
 html.jb-dark body { filter: invert(0.94) hue-rotate(180deg) contrast(0.93) brightness(1.05); background: #fff; }
@@ -54,3 +57,31 @@ nav::-webkit-scrollbar { display: none; }
 /* subtle admin animation utilities */
 @keyframes adminFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .admin-fade { animation: adminFade .35s ease both; }
+
+@media (max-width: 1100px) {
+  [style*="grid-template-columns: repeat(12,1fr)"] { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(10,1fr)"] { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(9,1fr)"] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(8,1fr)"] { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(7,1fr)"] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(6,1fr)"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(5,1fr)"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(4,1fr)"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  [style*="grid-template-columns: repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1fr 34px 1fr 34px 1fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1fr 1.15fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1fr 1.4fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1fr 2.4fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1fr 1.1fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns: 1.35fr 0.8fr 0.9fr 0.8fr 1.2fr 1fr"] { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 768px) {
+  [style*="padding: 64px 40px 196px"] { padding: 32px 16px 96px !important; }
+  [style*="padding: 64px 28px 64px"], [style*="padding: 64px 28px 30px"], [style*="padding: 64px 28px"], [style*="padding: 60px 28px"], [style*="padding: 56px 28px"] { padding-left: 16px !important; padding-right: 16px !important; }
+  [style*="padding: 26px 28px 60px"], [style*="padding: 26px 28px 52px"], [style*="padding: 24px 28px 56px"], [style*="padding: 26px 28px 56px"] { padding: 24px 16px !important; }
+  [style*="padding: 0 28px 64px"], [style*="padding: 0 28px 56px"], [style*="padding: 0 28px"] { padding-left: 16px !important; padding-right: 16px !important; }
+  [style*="padding: 36px 28px"], [style*="padding: 38px 42px"], [style*="padding: 34px 40px"], [style*="padding: 34px 26px"], [style*="padding: 32px 28px"], [style*="padding: 34px 24px"] { padding: 24px 16px !important; }
+  [style*="padding: 28px 18px"] { padding: 20px 12px !important; }
+  [style*="padding: 24px 16px"] { padding: 16px !important; }
+}
