@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type MouseEvent } from "react";
 import { useJb, type Lang, type Page } from "./JbProvider";
 import { HoverBox } from "./primitives";
 
@@ -65,7 +65,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: globalThis.MouseEvent) => {
       const target = e.target as Node;
       if (jb.langOpen && langBtnRef.current && !langBtnRef.current.contains(target)) {
         jb.setLangOpen(false);
@@ -147,7 +147,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
             </a>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <div ref={langBtnRef} style={{ position: "relative" }}>
-                <HoverBox onClick={(e) => { e.stopPropagation(); jb.setLangOpen(!jb.langOpen); }} style={{ display: "flex", alignItems: "center", gap: 4, border: `1px solid ${pillBorder}`, borderRadius: 999, padding: "6px 8px", fontSize: 11, fontWeight: 700, color: pillColor, cursor: "pointer", transition: "border-color .18s" }} hoverStyle={{ borderColor: "#1D4E9E" }}>
+                <HoverBox onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); jb.setLangOpen(!jb.langOpen); }} style={{ display: "flex", alignItems: "center", gap: 4, border: `1px solid ${pillBorder}`, borderRadius: 999, padding: "6px 8px", fontSize: 11, fontWeight: 700, color: pillColor, cursor: "pointer", transition: "border-color .18s" }} hoverStyle={{ borderColor: "#1D4E9E" }}>
                   <span style={MI("language")}>language</span>
                   {curLang[1]}
                 </HoverBox>
@@ -168,7 +168,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                     zIndex: 100 
                   }}>
                     {LANGS.map((l) => (
-                      <HoverBox key={l[0]} onClick={(e) => { e.stopPropagation(); jb.setLang(l[0]); }} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 8, cursor: "pointer", fontSize: 12.5, fontWeight: 700, color: l[0] === jb.lang ? "#1D4E9E" : "#2E4165", background: l[0] === jb.lang ? "#EAF1FB" : "transparent", transition: "background .15s" }} hoverStyle={{ background: "#F0F4FB" }}>
+                      <HoverBox key={l[0]} onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); jb.setLang(l[0]); }} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 8, cursor: "pointer", fontSize: 12.5, fontWeight: 700, color: l[0] === jb.lang ? "#1D4E9E" : "#2E4165", background: l[0] === jb.lang ? "#EAF1FB" : "transparent", transition: "background .15s" }} hoverStyle={{ background: "#F0F4FB" }}>
                         <span style={{ fontSize: 13 }}>{l[3]}</span>{l[2]}
                       </HoverBox>
                     ))}
@@ -432,7 +432,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
             {/* Desktop Right Controls */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
               <div ref={langBtnRef} style={{ position: "relative" }}>
-                <HoverBox onClick={(e) => { e.stopPropagation(); jb.setLangOpen(!jb.langOpen); }} style={{ display: "flex", alignItems: "center", gap: 5, border: `1px solid ${pillBorder}`, borderRadius: 999, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: pillColor, cursor: "pointer", transition: "border-color .18s" }} hoverStyle={{ borderColor: "#1D4E9E" }}>
+                <HoverBox onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); jb.setLangOpen(!jb.langOpen); }} style={{ display: "flex", alignItems: "center", gap: 5, border: `1px solid ${pillBorder}`, borderRadius: 999, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: pillColor, cursor: "pointer", transition: "border-color .18s" }} hoverStyle={{ borderColor: "#1D4E9E" }}>
                   <span style={MI("language")}>language</span>
                   {curLang[1]}
                   <span style={MI("expand_more")}>expand_more</span>
@@ -440,7 +440,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                 {jb.langOpen && (
                   <div style={{ position: "absolute", top: 42, right: 0, background: "#fff", border: "1px solid #E3EAF4", borderRadius: 12, boxShadow: "0 14px 34px rgba(18,41,79,0.18)", padding: 6, display: "flex", flexDirection: "column", gap: 2, minWidth: 160, zIndex: 100 }}>
                     {LANGS.map((l) => (
-                      <HoverBox key={l[0]} onClick={(e) => { e.stopPropagation(); jb.setLang(l[0]); }} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 8, cursor: "pointer", fontSize: 12.5, fontWeight: 700, color: l[0] === jb.lang ? "#1D4E9E" : "#2E4165", background: l[0] === jb.lang ? "#EAF1FB" : "transparent", transition: "background .15s" }} hoverStyle={{ background: "#F0F4FB" }}>
+                      <HoverBox key={l[0]} onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); jb.setLang(l[0]); }} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 8, cursor: "pointer", fontSize: 12.5, fontWeight: 700, color: l[0] === jb.lang ? "#1D4E9E" : "#2E4165", background: l[0] === jb.lang ? "#EAF1FB" : "transparent", transition: "background .15s" }} hoverStyle={{ background: "#F0F4FB" }}>
                         <span style={{ fontSize: 13 }}>{l[3]}</span>{l[2]}
                       </HoverBox>
                     ))}
@@ -454,7 +454,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
               
               {sess && (
                 <div ref={accountBtnRef} style={{ position: "relative", flexShrink: 0 }}>
-                  <HoverBox onClick={(e) => { e.stopPropagation(); jb.setAcctOpen(!jb.acctOpen); }} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${pillBorder}`, borderRadius: 999, padding: "5px 12px 5px 5px", cursor: "pointer", transition: "border-color .18s" }} hoverStyle={{ borderColor: "#1D4E9E" }}>
+                  <HoverBox onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); jb.setAcctOpen(!jb.acctOpen); }} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${pillBorder}`, borderRadius: 999, padding: "5px 12px 5px 5px", cursor: "pointer", transition: "border-color .18s" }} hoverStyle={{ borderColor: "#1D4E9E" }}>
                     <span style={{ width: 28, height: 28, borderRadius: "50%", background: "#1D4E9E", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, fontWeight: 800 }}>{acctInitial}</span>
                     <span style={{ fontSize: 12.5, fontWeight: 700, color: pillColor, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{acctName}</span>
                     <span style={{ ...MI("expand_more"), color: pillColor }}>expand_more</span>
@@ -468,7 +468,7 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 9, fontSize: 12.5, fontWeight: 700, color: "#B0BACb", cursor: "default" }}>
                         <span style={MI("dashboard", 17)}>dashboard</span>{t("Личный кабинет скоро")}
                       </div>
-                      <HoverBox onClick={(e) => { e.stopPropagation(); jb.logout(); }} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 9, fontSize: 12.5, fontWeight: 700, color: "#C22B3E", cursor: "pointer", transition: "background .15s" }} hoverStyle={{ background: "#FCEFF1" }}>
+                      <HoverBox onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); jb.logout(); }} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 9, fontSize: 12.5, fontWeight: 700, color: "#C22B3E", cursor: "pointer", transition: "background .15s" }} hoverStyle={{ background: "#FCEFF1" }}>
                         <span style={MI("logout", 17)}>logout</span>{t("Выйти")}
                       </HoverBox>
                     </div>

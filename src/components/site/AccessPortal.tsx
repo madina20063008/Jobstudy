@@ -414,6 +414,9 @@ export function AccessPortal() {
 @keyframes jbSpin{to{transform:rotate(360deg)}}
 @keyframes jbPop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 @keyframes jbRing{0%{transform:scale(.5);opacity:.0}100%{transform:scale(1);opacity:1}}
+.rail-desktop{display:none}
+.success-actions{flex-direction:column}
+@media (min-width: 480px){.rail-desktop{display:flex}.success-actions{flex-direction:row}}
 `}</style>
       <div onClick={close} style={overlayStyle}>
         <div onClick={(e) => e.stopPropagation()} style={panelStyle}>
@@ -446,7 +449,6 @@ export function AccessPortal() {
           <div
             style={{
               display: "none",
-              "@media (min-width: 768px)": { display: "flex" },
               flex: "0 0 320px",
               maxWidth: 320,
               background: "linear-gradient(160deg,#16305E 0%,#1D4E9E 100%)",
@@ -1626,7 +1628,6 @@ export function AccessPortal() {
                       gap: 12,
                       marginTop: 24,
                       flexDirection: "column",
-                      "@media (min-width: 480px)": { flexDirection: "row" },
                     }}
                     className="success-actions"
                   >

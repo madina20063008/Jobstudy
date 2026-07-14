@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-const MI = (size: number): React.CSSProperties => ({ fontFamily: "'Material Symbols Outlined'", fontSize: size });
+const MI = (size: number | string): CSSProperties => ({ fontFamily: "'Material Symbols Outlined'", fontSize: size });
 
 export function IntroSplash() {
   const [show, setShow] = useState(false);

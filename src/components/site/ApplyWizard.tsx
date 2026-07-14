@@ -918,6 +918,10 @@ export function ApplyWizard() {
 @keyframes jbWzSpin{to{transform:rotate(360deg)}}
 @keyframes jbWzPop{0%{opacity:0;transform:scale(.5)}60%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
 @keyframes jbWzRing{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+.rail-desktop{display:none}
+.result-actions{flex-direction:column}
+@media (min-width:768px){.rail-desktop{display:flex}}
+@media (min-width:480px){.result-actions{flex-direction:row}}
 `}</style>
       <div onClick={close} style={overlayStyle}>
         <div onClick={(e) => e.stopPropagation()} style={panelStyle}>
@@ -953,7 +957,6 @@ export function ApplyWizard() {
           <div
             style={{
               display: "none",
-              "@media (min-width: 768px)": { display: "flex" },
               flex: "0 0 280px",
               maxWidth: 280,
               background: "linear-gradient(165deg,#16305E 0%,#1D4E9E 100%)",
@@ -2970,7 +2973,6 @@ export function ApplyWizard() {
                       gap: 10,
                       marginTop: 18,
                       flexDirection: "column",
-                      "@media (min-width: 480px)": { flexDirection: "row" },
                     }}
                     className="result-actions"
                   >
