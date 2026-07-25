@@ -16,7 +16,7 @@ const NAV_ITEMS: [string, string, Page | "", string][] = [
   ["projects", "Проекты", "Grow", ""],
   ["career", "Карьера", "Career", ""],
   ["news", "Новости", "Home", "news"],
-  ["contact", "Контакты", "", "contact"],
+  ["contact", "Контакты", "Home", "contact"],
 ];
 
 const LANGS: [Lang, string, string, string][] = [
@@ -290,7 +290,6 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                           e.preventDefault();
                           setMobileMenuOpen(false);
                           if (page) jb.go(page, frag);
-                          else if (frag) { window.location.hash = frag; } // anchor (#contact) — sync scrolls
                         }}
                         style={{ 
                           textDecoration: "none", 
@@ -404,7 +403,6 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                     e.preventDefault();
                     const it = NAV_ITEMS.find((n) => n[0] === key)!;
                     if (it[2]) jb.go(it[2], it[3]);
-                    else if (it[3]) { window.location.hash = it[3]; } // anchor (#contact) — sync scrolls
                   }}
                     style={{
                       textDecoration: "none",

@@ -8,6 +8,44 @@ export type Page =
   | "Home" | "About" | "Japan" | "Germany" | "Institute"
   | "Career" | "Cooperation" | "Agency" | "Grow";
 
+// clean URL paths per page (no hash)
+const PAGE_PATHS: Record<Page, string> = {
+  Home: "/", About: "/about", Japan: "/japan", Germany: "/germany",
+  Institute: "/institute", Career: "/career", Cooperation: "/cooperation",
+  Agency: "/agency", Grow: "/grow",
+};
+const PATH_PAGES: Record<string, Page> = Object.fromEntries(
+  Object.entries(PAGE_PATHS).map(([p, path]) => [path, p as Page]),
+) as Record<string, Page>;
+
+// build the clean URL path for a page + optional section, e.g. Japan+"programs" -> /japan/programs
+function pathFor(page: Page, frag?: string): string {
+  const base = PAGE_PATHS[page] || "/";
+  if (!frag) return base;
+  return base === "/" ? `/${frag}` : `${base}/${frag}`;
+}
+// parse a pathname into { page, frag }, e.g. /japan/programs -> { Japan, "programs" }
+function routeFromPath(pathname: string): { page: Page; frag: string } {
+  const segs = (pathname || "/").split("/").filter(Boolean);
+  if (!segs.length) return { page: "Home", frag: "" };
+  const first = "/" + segs[0];
+  if (PATH_PAGES[first]) return { page: PATH_PAGES[first], frag: segs[1] || "" };
+  // first segment isn't a page → treat it as a Home-page section (e.g. /news, /contact)
+  return { page: "Home", frag: segs[0] };
+}
+
+// smooth-scroll to a section id, retrying a few frames until the (possibly just-rendered) element exists
+function scrollToFrag(frag: string) {
+  if (!frag) return;
+  let tries = 0;
+  const attempt = () => {
+    const el = document.getElementById(frag);
+    if (el) { window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 66), behavior: "smooth" }); return; }
+    if (tries++ < 24) requestAnimationFrame(attempt);
+  };
+  requestAnimationFrame(attempt);
+}
+
 export interface Session { name?: string; email?: string; role?: string }
 
 interface Ctx {
@@ -131,40 +169,23 @@ export function JbProvider({ children, content = null }: { children: React.React
       if (cancelled) return;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         translateDom(lang);
-        if (pendingFrag.current) {
-          const el = document.getElementById(pendingFrag.current);
-          if (el) { const y = el.getBoundingClientRect().top + window.pageYOffset - 66; window.scrollTo(0, y < 0 ? 0 : y); }
-          pendingFrag.current = "";
-        }
       }));
     })();
     return () => { cancelled = true; };
   }, [route, lang]);
 
-  // URL <-> route sync: deep-links, refresh, and browser back/forward
+  // URL <-> route sync: clean paths (/japan, /germany…), refresh, deep-link, back/forward
   useEffect(() => {
-    const VALID: Page[] = ["Home", "About", "Japan", "Germany", "Institute", "Career", "Cooperation", "Agency", "Grow"];
     const sync = () => {
-      const raw = window.location.hash.replace(/^#/, "");
-      if (!raw) { pendingFrag.current = ""; setRoute("Home"); requestAnimationFrame(() => window.scrollTo(0, 0)); return; }
-      const [name, frag] = raw.split("#");
-      if ((VALID as string[]).includes(name)) {
-        pendingFrag.current = frag || "";
-        setRoute(name as Page);
-        // no fragment → scroll to top; a fragment is scrolled to by the [route,lang] effect
-        if (!frag) requestAnimationFrame(() => window.scrollTo(0, 0));
-      } else {
-        // an in-page anchor (#contact, #news…) — smooth-scroll, keep current page
-        requestAnimationFrame(() => {
-          const el = document.getElementById(name);
-          if (el) window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 66), behavior: "smooth" });
-        });
-      }
+      const { page, frag } = routeFromPath(window.location.pathname);
+      pendingFrag.current = "";
+      setRoute(page);
+      if (frag) scrollToFrag(frag);
+      else requestAnimationFrame(() => window.scrollTo(0, 0));
     };
     sync(); // initial (deep-link / refresh)
     window.addEventListener("popstate", sync);
-    window.addEventListener("hashchange", sync);
-    return () => { window.removeEventListener("popstate", sync); window.removeEventListener("hashchange", sync); };
+    return () => window.removeEventListener("popstate", sync);
   }, []);
 
   const setLang = useCallback((l: Lang) => {
@@ -184,17 +205,14 @@ export function JbProvider({ children, content = null }: { children: React.React
 
   const go = useCallback((page: Page, frag?: string) => {
     setLangOpen(false); setAcctOpen(false);
-    const target = frag ? `${page}#${frag}` : page;
-    const cur = window.location.hash.replace(/^#/, "");
-    if (cur === target) {
-      // URL already matches — hashchange won't fire, so drive the update directly
-      pendingFrag.current = frag || "";
-      setRoute(page);
-      if (!frag) requestAnimationFrame(() => window.scrollTo(0, 0));
-    } else {
-      // updates the address bar AND fires `hashchange` -> the sync handler routes + scrolls
-      window.location.hash = target;
-    }
+    const path = pathFor(page, frag);
+    try {
+      if (window.location.pathname !== path) window.history.pushState(null, "", path);
+    } catch {}
+    pendingFrag.current = "";
+    setRoute(page);
+    if (frag) scrollToFrag(frag); // retries until the section exists (works same-page or after page swap)
+    else requestAnimationFrame(() => window.scrollTo(0, 0));
   }, []);
 
   const setSession = useCallback((s: Session | null) => {
