@@ -128,12 +128,12 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
       <div style={{ 
         maxWidth: 1320, 
         margin: "0 auto", 
-        padding: isMobile ? "0 16px" : "0 28px", 
-        minHeight: 68, 
-        display: "flex", 
-        alignItems: "center", 
+        padding: isMobile ? "0 16px" : "0 20px",
+        minHeight: 68,
+        display: "flex",
+        alignItems: "center",
         justifyContent: "space-between",
-        gap: isMobile ? 10 : 18,
+        gap: isMobile ? 10 : 14,
       }}>
         {isMobile ? (
           <>
@@ -286,15 +286,12 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                         as="a" 
                         key={key} 
                         href="#" 
-                        onClick={(e: React.MouseEvent) => { 
-                          e.preventDefault(); 
-                          setMobileMenuOpen(false); 
-                          if (page) jb.go(page, frag); 
-                          else if (frag) { 
-                            const el = document.getElementById(frag); 
-                            if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.pageYOffset - 66); 
-                          } 
-                        }} 
+                        onClick={(e: React.MouseEvent) => {
+                          e.preventDefault();
+                          setMobileMenuOpen(false);
+                          if (page) jb.go(page, frag);
+                          else if (frag) { window.location.hash = frag; } // anchor (#contact) — sync scrolls
+                        }}
                         style={{ 
                           textDecoration: "none", 
                           fontSize: 15, 
@@ -390,13 +387,13 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                 <div style={{ fontSize: 8, letterSpacing: "1.9px", fontWeight: 600, color: logoSub }}>INTERNATIONAL PLATFORM</div>
               </div>
             </a>
-            <nav style={{ 
-              display: "flex", 
-              gap: "clamp(8px,1.4vw,20px)", 
-              marginLeft: "auto", 
-              alignItems: "center", 
-              minWidth: 0, 
-              overflowX: "auto", 
+            <nav style={{
+              display: "flex",
+              gap: "clamp(3px,0.75vw,11px)",
+              marginLeft: "auto",
+              alignItems: "center",
+              minWidth: 0,
+              overflowX: "auto",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
             }}>
@@ -406,19 +403,16 @@ export function SiteNav({ active = "home", navTheme = "light" }: { active?: stri
                   <HoverBox as="a" key={key} href="#" onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     const it = NAV_ITEMS.find((n) => n[0] === key)!;
-                    if (it[2]) jb.go(it[2], it[3]); 
-                    else if (it[3]) { 
-                      const el = document.getElementById(it[3]); 
-                      if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.pageYOffset - 66); 
-                    }
+                    if (it[2]) jb.go(it[2], it[3]);
+                    else if (it[3]) { window.location.hash = it[3]; } // anchor (#contact) — sync scrolls
                   }}
-                    style={{ 
-                      textDecoration: "none", 
-                      whiteSpace: "nowrap", 
-                      fontSize: 13, 
-                      fontWeight: 700, 
-                      color: isActive ? act : base, 
-                      padding: "24px 1px 20px", 
+                    style={{
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      color: isActive ? act : base,
+                      padding: "24px 2px 20px",
                       borderBottom: `2px solid ${isActive ? (dark ? "#FFFFFF" : "#1D4E9E") : "transparent"}`, 
                       transition: "color .18s,border-color .18s" 
                     }}

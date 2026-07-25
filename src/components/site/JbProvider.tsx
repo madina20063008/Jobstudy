@@ -141,6 +141,32 @@ export function JbProvider({ children, content = null }: { children: React.React
     return () => { cancelled = true; };
   }, [route, lang]);
 
+  // URL <-> route sync: deep-links, refresh, and browser back/forward
+  useEffect(() => {
+    const VALID: Page[] = ["Home", "About", "Japan", "Germany", "Institute", "Career", "Cooperation", "Agency", "Grow"];
+    const sync = () => {
+      const raw = window.location.hash.replace(/^#/, "");
+      if (!raw) { pendingFrag.current = ""; setRoute("Home"); requestAnimationFrame(() => window.scrollTo(0, 0)); return; }
+      const [name, frag] = raw.split("#");
+      if ((VALID as string[]).includes(name)) {
+        pendingFrag.current = frag || "";
+        setRoute(name as Page);
+        // no fragment → scroll to top; a fragment is scrolled to by the [route,lang] effect
+        if (!frag) requestAnimationFrame(() => window.scrollTo(0, 0));
+      } else {
+        // an in-page anchor (#contact, #news…) — smooth-scroll, keep current page
+        requestAnimationFrame(() => {
+          const el = document.getElementById(name);
+          if (el) window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 66), behavior: "smooth" });
+        });
+      }
+    };
+    sync(); // initial (deep-link / refresh)
+    window.addEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+    return () => { window.removeEventListener("popstate", sync); window.removeEventListener("hashchange", sync); };
+  }, []);
+
   const setLang = useCallback((l: Lang) => {
     setLangState(l); setLangOpen(false);
     try { localStorage.setItem("jb-lang", l); } catch {}
@@ -157,10 +183,18 @@ export function JbProvider({ children, content = null }: { children: React.React
   }, []);
 
   const go = useCallback((page: Page, frag?: string) => {
-    pendingFrag.current = frag || "";
-    setRoute(page);
     setLangOpen(false); setAcctOpen(false);
-    if (!frag) requestAnimationFrame(() => window.scrollTo(0, 0));
+    const target = frag ? `${page}#${frag}` : page;
+    const cur = window.location.hash.replace(/^#/, "");
+    if (cur === target) {
+      // URL already matches — hashchange won't fire, so drive the update directly
+      pendingFrag.current = frag || "";
+      setRoute(page);
+      if (!frag) requestAnimationFrame(() => window.scrollTo(0, 0));
+    } else {
+      // updates the address bar AND fires `hashchange` -> the sync handler routes + scrolls
+      window.location.hash = target;
+    }
   }, []);
 
   const setSession = useCallback((s: Session | null) => {
