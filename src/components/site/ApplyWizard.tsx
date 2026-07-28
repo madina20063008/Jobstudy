@@ -444,6 +444,13 @@ export function ApplyWizard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  /* Translate freshly-rendered modal content (the global [route,lang]
+     translation effect doesn't fire when only the modal state changes). */
+  useEffect(() => {
+    if (open) jb.retranslate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, flow, branch, step, booking, jb.lang]);
+
   function resetAll() {
     setFlow("welcome");
     setBranch("");

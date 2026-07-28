@@ -361,6 +361,7 @@ export function Grow() {
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <div
+                data-keep="true"
                 style={{
                   width: "clamp(160px, 25vw, 230px)",
                   height: "clamp(160px, 25vw, 230px)",

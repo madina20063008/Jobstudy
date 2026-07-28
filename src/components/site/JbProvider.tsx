@@ -72,6 +72,8 @@ interface Ctx {
   closePortal: () => void;
   // translation of arbitrary russian string (for JS-computed labels)
   tr: (ru: string) => string;
+  // force a DOM re-translation (e.g. after a modal renders new content)
+  retranslate: () => void;
   // live DB-bound content for the Home page (null → use static defaults)
   siteData: SiteData | null;
 }
@@ -232,6 +234,15 @@ export function JbProvider({ children, content = null }: { children: React.React
     return (d && d[ru.trim()]) || ru;
   }, [lang]);
 
+  // re-run the DOM translation on the next frames — modals inject fresh
+  // Russian text after open/step changes, which the [route,lang] effect misses.
+  const retranslate = useCallback(() => {
+    (async () => {
+      if (lang !== "ru") await loadDict(lang);
+      requestAnimationFrame(() => requestAnimationFrame(() => translateDom(lang)));
+    })();
+  }, [lang]);
+
   return (
     <JbContext.Provider value={{
       lang, setLang, dark, toggleTheme, route, go,
@@ -239,7 +250,7 @@ export function JbProvider({ children, content = null }: { children: React.React
       session, logout, setSession,
       applyOpen, openApply, closeApply,
       portalOpen, portalMode, openPortal, closePortal,
-      tr, siteData: content,
+      tr, retranslate, siteData: content,
     }}>
       {children}
     </JbContext.Provider>

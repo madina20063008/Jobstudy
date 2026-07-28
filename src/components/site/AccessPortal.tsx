@@ -182,6 +182,13 @@ export function AccessPortal() {
 
   useEffect(() => () => clearTimer(), [clearTimer]);
 
+  /* Translate freshly-rendered modal content (the global [route,lang]
+     translation effect doesn't fire when only the modal state changes). */
+  useEffect(() => {
+    if (jb.portalOpen) jb.retranslate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jb.portalOpen, view, jb.lang]);
+
   const roleObj: Role = ROLES.find((r) => r[0] === role) || [
     "",
     "person",
